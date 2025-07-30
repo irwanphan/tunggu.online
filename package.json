@@ -3,9 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev -p 5699",
     "build": "next build",
-    "start": "next start",
+    "start": "next start -p 5699",
     "lint": "next lint"
   },
   "dependencies": {
@@ -23,6 +23,7 @@
   "devDependencies": {
     "@eslint/eslintrc": "^3",
     "@tailwindcss/postcss": "^4",
+    "@types/bcrypt": "^6.0.0",
     "@types/heatmap.js": "^2.0.41",
     "@types/node": "^20",
     "@types/react": "^19",
