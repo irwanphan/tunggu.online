@@ -81,19 +81,19 @@ export function Demo() {
             <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
               <div className="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-4">
                 <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">
-                  {demoData.pageviews.toLocaleString()}
+                  {demoData.pageviews.toLocaleString('en-US')}
                 </div>
                 <div className="text-sm text-gray-600 dark:text-gray-300">Pageviews</div>
               </div>
               <div className="bg-green-50 dark:bg-green-900/20 rounded-lg p-4">
                 <div className="text-2xl font-bold text-green-600 dark:text-green-400">
-                  {demoData.clicks.toLocaleString()}
+                  {demoData.clicks.toLocaleString('en-US')}
                 </div>
                 <div className="text-sm text-gray-600 dark:text-gray-300">Clicks</div>
               </div>
               <div className="bg-purple-50 dark:bg-purple-900/20 rounded-lg p-4">
                 <div className="text-2xl font-bold text-purple-600 dark:text-purple-400">
-                  {demoData.scrolls.toLocaleString()}
+                  {demoData.scrolls.toLocaleString('en-US')}
                 </div>
                 <div className="text-sm text-gray-600 dark:text-gray-300">Scroll Events</div>
               </div>
@@ -118,7 +118,7 @@ export function Demo() {
                         {page.url}
                       </span>
                       <span className="text-gray-500 dark:text-gray-400 font-medium">
-                        {page.views.toLocaleString()} views
+                        {page.views.toLocaleString('en-US')} views
                       </span>
                     </div>
                   ))}
