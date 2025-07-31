@@ -11,12 +11,17 @@ export const authOptions = {
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
-        if (!credentials?.email || !credentials?.password) return null;
-        const user = await prisma.user.findUnique({ where: { email: credentials.email } });
-        if (!user) return null;
-        const valid = await bcrypt.compare(credentials.password, user.passwordHash);
-        if (!valid) return null;
-        return { id: user.id, email: user.email };
+        try {
+          if (!credentials?.email || !credentials?.password) return null;
+          const user = await prisma.user.findUnique({ where: { email: credentials.email } });
+          if (!user) return null;
+          const valid = await bcrypt.compare(credentials.password, user.passwordHash);
+          if (!valid) return null;
+          return { id: user.id, email: user.email };
+        } catch (error) {
+          console.error('Auth error:', error);
+          return null;
+        }
       },
     }),
   ],
@@ -33,5 +38,5 @@ export const authOptions = {
     },
   },
   session: { strategy: "jwt" as const },
-  secret: process.env.NEXTAUTH_SECRET,
+  secret: process.env.NEXTAUTH_SECRET || "fallback-secret-for-build",
 };
