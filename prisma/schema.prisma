@@ -39,3 +39,13 @@ model Event {
   extra         Json?
   createdAt     DateTime @default(now())
 }
+
+model GovernmentSite {
+  id          String   @id @default(cuid())
+  name        String
+  url         String
+  category    String
+  status      String
+  responseMs  Int?
+  checkedAt   DateTime?
+}
