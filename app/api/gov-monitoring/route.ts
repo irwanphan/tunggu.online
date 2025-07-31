@@ -6,16 +6,30 @@ export const dynamic = 'force-dynamic';
 
 export async function POST(req: Request) {
   try {
-    // Return mock data during build time or when database is not available
-    if (process.env.NODE_ENV === 'production' && !process.env.DATABASE_URL) {
-      return Response.json({ success: true });
+    console.log('POST /api/gov-monitoring called');
+    console.log('Headers:', Object.fromEntries(req.headers.entries()));
+    
+    const data = await req.json();
+    console.log('Received data:', data);
+    
+    // Check if we have database connection
+    if (!process.env.DATABASE_URL) {
+      console.error('DATABASE_URL not found');
+      return Response.json({ success: false, error: 'Database not configured' }, { status: 500 });
     }
 
     // Only import database in runtime
     const { prisma } = await import("@/lib/prisma");
     
-    const data = await req.json();
-    await prisma.governmentSite.create({
+    console.log('Saving to database:', {
+      name: data.name,
+      url: data.url,
+      category: data.category || 'Government',
+      status: data.status,
+      responseMs: data.responseTime,
+    });
+    
+    const result = await prisma.governmentSite.create({
       data: {
         name: data.name,
         url: data.url,
@@ -25,17 +39,25 @@ export async function POST(req: Request) {
         checkedAt: new Date(),
       },
     });
-    return Response.json({ success: true });
+    
+    console.log('Data saved successfully:', result);
+    return Response.json({ success: true, id: result.id });
   } catch (error) {
     console.error('Error saving government monitoring data:', error);
-    return Response.json({ success: false, error: 'Failed to save data' });
+    return Response.json({ 
+      success: false, 
+      error: error instanceof Error ? error.message : 'Failed to save data' 
+    }, { status: 500 });
   }
 }
 
 export async function GET(req: NextRequest) {
   try {
-    // Return mock data during build time or when database is not available
-    if (process.env.NODE_ENV === 'production' && !process.env.DATABASE_URL) {
+    console.log('GET /api/gov-monitoring called');
+    
+    // Check if we have database connection
+    if (!process.env.DATABASE_URL) {
+      console.error('DATABASE_URL not found');
       return Response.json([]);
     }
 
@@ -49,6 +71,8 @@ export async function GET(req: NextRequest) {
         checkedAt: true
       }
     });
+
+    console.log('Found sites:', sites.length);
 
     // Get the actual data for each site's latest check
     const latestData = await Promise.all(
@@ -67,7 +91,10 @@ export async function GET(req: NextRequest) {
       })
     );
 
-    return Response.json(latestData.filter(Boolean));
+    const filteredData = latestData.filter(Boolean);
+    console.log('Returning data:', filteredData.length, 'records');
+    
+    return Response.json(filteredData);
   } catch (error) {
     console.error('Error fetching government monitoring data:', error);
     return Response.json([]);
