@@ -9,6 +9,11 @@ export const dynamic = 'force-dynamic';
 
 export async function GET(req: NextRequest) {
   try {
+    // Check if we're in build time
+    if (process.env.NODE_ENV === 'production' && !process.env.DATABASE_URL) {
+      return new Response("Service unavailable during build", { status: 503 });
+    }
+
     const session = await getServerSession(authOptions) as Session & { user: { id: string } };
     if (!session?.user?.id) {
       return new Response("Unauthorized", { status: 401 });

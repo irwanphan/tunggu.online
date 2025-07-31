@@ -1,6 +1,26 @@
 {
   "buildCommand": "npm run build",
   "installCommand": "npm install",
+  "functions": {
+    "app/api/analytics/route.ts": {
+      "maxDuration": 10
+    },
+    "app/api/auth/[...nextauth]/route.ts": {
+      "maxDuration": 10
+    },
+    "app/api/events/route.ts": {
+      "maxDuration": 10
+    },
+    "app/api/heatmap/clicks/route.ts": {
+      "maxDuration": 10
+    },
+    "app/api/heatmap/urls/route.ts": {
+      "maxDuration": 10
+    },
+    "app/api/site/route.ts": {
+      "maxDuration": 10
+    }
+  },
   "git": {
     "deploymentEnabled": {
       "main": true,
