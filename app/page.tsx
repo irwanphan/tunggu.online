@@ -1,4 +1,5 @@
 import { Demo } from '@/components/DemoDashboard';
+import { GovernmentMonitoring } from '@/components/GovernmentMonitoring';
 import { Header } from '@/components/Header';
 import { Hero } from '@/components/Hero';
 import { Features } from '@/components/Features';
@@ -11,6 +12,7 @@ export default function Home() {
         <Hero />
         <Features />
         <Demo />
+        <GovernmentMonitoring />
       </main>
     </div>
   );
