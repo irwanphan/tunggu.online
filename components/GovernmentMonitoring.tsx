@@ -1,249 +1,175 @@
 'use client';
 
-import Link from 'next/link';
 import { useState, useEffect } from 'react';
 
-interface Website {
+interface GovernmentSite {
   id: string;
   name: string;
   url: string;
   category: string;
-  status: 'online' | 'offline' | 'checking';
-  lastChecked: Date;
-  responseTime?: number;
+  status: string;
+  responseMs: number;
+  checkedAt: string;
 }
 
 export function GovernmentMonitoring() {
-  const [websites, setWebsites] = useState<Website[]>([
-    {
-      id: '1',
-      name: 'Satu Data Indonesia',
-      url: 'https://data.go.id',
-      category: 'Data & Statistik',
-      status: 'checking',
-      lastChecked: new Date()
-    },
-    {
-      id: '2',
-      name: 'DPR RI',
-      url: 'https://dpr.go.id',
-      category: 'Legislatif',
-      status: 'checking',
-      lastChecked: new Date()
-    },
-    {
-      id: '3',
-      name: 'POLRI',
-      url: 'https://polri.go.id',
-      category: 'Keamanan',
-      status: 'checking',
-      lastChecked: new Date()
-    },
-    {
-      id: '4',
-      name: 'Kementerian Keuangan',
-      url: 'https://kemenkeu.go.id',
-      category: 'Ekonomi',
-      status: 'checking',
-      lastChecked: new Date()
-    },
-    {
-      id: '5',
-      name: 'Kementerian Kesehatan',
-      url: 'https://kemkes.go.id',
-      category: 'Kesehatan',
-      status: 'checking',
-      lastChecked: new Date()
-    },
-    {
-      id: '6',
-      name: 'Kementerian Pendidikan',
-      url: 'https://kemdikbud.go.id',
-      category: 'Pendidikan',
-      status: 'checking',
-      lastChecked: new Date()
-    },
-    {
-      id: '7',
-      name: 'BPS',
-      url: 'https://bps.go.id',
-      category: 'Data & Statistik',
-      status: 'checking',
-      lastChecked: new Date()
-    },
-    {
-      id: '8',
-      name: 'Bank Indonesia',
-      url: 'https://bi.go.id',
-      category: 'Ekonomi',
-      status: 'checking',
-      lastChecked: new Date()
-    },
-    {
-      id: '9',
-      name: 'Kementerian Dalam Negeri',
-      url: 'https://kemendagri.go.id',
-      category: 'Pemerintahan',
-      status: 'checking',
-      lastChecked: new Date()
-    },
-    {
-      id: '10',
-      name: 'Kementerian Luar Negeri',
-      url: 'https://kemlu.go.id',
-      category: 'Pemerintahan',
-      status: 'checking',
-      lastChecked: new Date()
-    },
-    {
-      id: '11',
-      name: 'KPU',
-      url: 'https://kpu.go.id',
-      category: 'Pemilu',
-      status: 'checking',
-      lastChecked: new Date()
-    },
-    {
-      id: '12',
-      name: 'Bawaslu',
-      url: 'https://bawaslu.go.id',
-      category: 'Pemilu',
-      status: 'checking',
-      lastChecked: new Date()
-    }
-  ]);
-
+  const [sites, setSites] = useState<GovernmentSite[]>([]);
   const [filter, setFilter] = useState<string>('all');
   const [isLoading, setIsLoading] = useState(true);
+  const [lastUpdated, setLastUpdated] = useState<Date>(new Date());
 
-  // Simulate checking website status
-  const checkWebsiteStatus = async (website: Website): Promise<Website> => {
-    // Simulate network delay
-    await new Promise(resolve => setTimeout(resolve, Math.random() * 1000 + 200));
-    
-    // Simulate random status (in real implementation, this would be actual HTTP requests)
-    const isOnline = Math.random() > 0.15; // 85% chance of being online
-    const responseTime = Math.floor(Math.random() * 1500) + 100; // 100-1600ms
-    
-    return {
-      ...website,
-      status: isOnline ? 'online' : 'offline',
-      responseTime: isOnline ? responseTime : undefined,
-      lastChecked: new Date()
-    };
+  const fetchData = async () => {
+    try {
+      const response = await fetch('/api/gov-monitoring');
+      if (response.ok) {
+        const data = await response.json();
+        setSites(data);
+        setLastUpdated(new Date());
+      }
+    } catch (error) {
+      console.error('Error fetching government monitoring data:', error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   useEffect(() => {
-    const checkAllWebsites = async () => {
-      setIsLoading(true);
-      const updatedWebsites = await Promise.all(
-        websites.map(website => checkWebsiteStatus(website))
-      );
-      setWebsites(updatedWebsites);
-      setIsLoading(false);
-    };
-
-    checkAllWebsites();
-
-    // Set up interval to check every 3 minutes
-    const interval = setInterval(checkAllWebsites, 3 * 60 * 1000);
+    fetchData();
+    const interval = setInterval(fetchData, 3 * 60 * 1000); // Every 3 minutes
     return () => clearInterval(interval);
   }, []);
 
-  const filteredWebsites = filter === 'all' 
-    ? websites 
-    : websites.filter(website => website.category === filter);
+  const filteredSites = filter === 'all' 
+    ? sites 
+    : sites.filter(site => site.category.toLowerCase() === filter.toLowerCase());
+
+  const onlineCount = sites.filter(site => site.status === 'Online').length;
+  const offlineCount = sites.filter(site => site.status === 'Offline').length;
+  const totalCount = sites.length;
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'online':
-        return 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200';
-      case 'offline':
-        return 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200';
-      case 'checking':
-        return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200';
+      case 'Online':
+        return 'text-green-600 bg-green-100 dark:bg-green-900/20 dark:text-green-400';
+      case 'Offline':
+        return 'text-red-600 bg-red-100 dark:bg-red-900/20 dark:text-red-400';
       default:
-        return 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200';
+        return 'text-gray-600 bg-gray-100 dark:bg-gray-900/20 dark:text-gray-400';
     }
   };
 
-  const getStatusText = (status: string) => {
-    switch (status) {
-      case 'online':
-        return 'Online';
-      case 'offline':
-        return 'Offline';
-      case 'checking':
-        return 'Checking...';
-      default:
-        return 'Unknown';
-    }
+  const getResponseTimeColor = (responseTime: number) => {
+    if (responseTime < 500) return 'text-green-600';
+    if (responseTime < 1000) return 'text-yellow-600';
+    return 'text-red-600';
   };
-
-  const categories = ['all', 'Data & Statistik', 'Legislatif', 'Keamanan', 'Ekonomi', 'Kesehatan', 'Pendidikan', 'Pemerintahan', 'Pemilu'];
 
   return (
-    <section id="government-monitoring" className="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-red-50 to-orange-50 dark:from-red-900/20 dark:to-orange-900/20">
+    <section id="government-monitoring" className="py-16 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-red-50 to-orange-50 dark:from-red-900/20 dark:to-orange-900/20">
       <div className="max-w-7xl mx-auto">
+        {/* Header */}
         <div className="text-center mb-12">
-          <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white mb-4">
-            Pantau Layanan Pemerintah Indonesia
+          <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
+            Monitoring Website Pemerintah Indonesia
           </h2>
-          <p className="text-xl text-gray-600 dark:text-gray-300">
-            Pantau ketersediaan layanan digital pemerintah dan lembaga vital Indonesia secara real-time
+          <p className="text-lg text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
+            Pantau ketersediaan website penting pemerintah dan layanan vital Indonesia secara real-time
           </p>
         </div>
 
-        {/* Filter Buttons */}
-        <div className="flex flex-wrap justify-center gap-2 mb-8">
-          {categories.map(category => (
-            <button
-              key={category}
-              onClick={() => setFilter(category)}
-              className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-                filter === category
-                  ? 'bg-red-600 text-white'
-                  : 'bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-600'
-              }`}
-            >
-              {category === 'all' ? 'Semua' : category}
-            </button>
-          ))}
+        {/* Summary Stats */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+          <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm">
+            <div className="flex items-center">
+              <div className="p-2 bg-blue-100 dark:bg-blue-900/20 rounded-lg">
+                <svg className="w-6 h-6 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                </svg>
+              </div>
+              <div className="ml-4">
+                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Total Website</p>
+                <p className="text-2xl font-bold text-gray-900 dark:text-white">{totalCount}</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm">
+            <div className="flex items-center">
+              <div className="p-2 bg-green-100 dark:bg-green-900/20 rounded-lg">
+                <svg className="w-6 h-6 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                </svg>
+              </div>
+              <div className="ml-4">
+                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Online</p>
+                <p className="text-2xl font-bold text-green-600 dark:text-green-400">{onlineCount}</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm">
+            <div className="flex items-center">
+              <div className="p-2 bg-red-100 dark:bg-red-900/20 rounded-lg">
+                <svg className="w-6 h-6 text-red-600 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </div>
+              <div className="ml-4">
+                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Offline</p>
+                <p className="text-2xl font-bold text-red-600 dark:text-red-400">{offlineCount}</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm">
+            <div className="flex items-center">
+              <div className="p-2 bg-purple-100 dark:bg-purple-900/20 rounded-lg">
+                <svg className="w-6 h-6 text-purple-600 dark:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+              <div className="ml-4">
+                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Last Updated</p>
+                <p className="text-sm font-bold text-gray-900 dark:text-white">
+                  {lastUpdated.toLocaleTimeString('id-ID')}
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
 
-        {/* Status Summary */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          <div className="bg-white dark:bg-gray-700 rounded-lg p-6 text-center shadow-lg">
-            <div className="text-2xl font-bold text-green-600 dark:text-green-400">
-              {websites.filter(w => w.status === 'online').length}
-            </div>
-            <div className="text-gray-600 dark:text-gray-300">Online</div>
-          </div>
-          <div className="bg-white dark:bg-gray-700 rounded-lg p-6 text-center shadow-lg">
-            <div className="text-2xl font-bold text-red-600 dark:text-red-400">
-              {websites.filter(w => w.status === 'offline').length}
-            </div>
-            <div className="text-gray-600 dark:text-gray-300">Offline</div>
-          </div>
-          <div className="bg-white dark:bg-gray-700 rounded-lg p-6 text-center shadow-lg">
-            <div className="text-2xl font-bold text-yellow-600 dark:text-yellow-400">
-              {websites.filter(w => w.status === 'checking').length}
-            </div>
-            <div className="text-gray-600 dark:text-gray-300">Checking</div>
-          </div>
+        {/* Filter */}
+        <div className="flex flex-wrap gap-2 mb-6">
+          <button
+            onClick={() => setFilter('all')}
+            className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+              filter === 'all'
+                ? 'bg-blue-600 text-white'
+                : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700'
+            }`}
+          >
+            Semua ({totalCount})
+          </button>
+          <button
+            onClick={() => setFilter('government')}
+            className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+              filter === 'government'
+                ? 'bg-blue-600 text-white'
+                : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700'
+            }`}
+          >
+            Pemerintah ({sites.filter(s => s.category === 'Government').length})
+          </button>
         </div>
 
-        {/* Website List */}
-        <div className="bg-white dark:bg-gray-700 rounded-lg shadow-lg overflow-hidden">
+        {/* Sites Table */}
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm overflow-hidden">
           <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-600">
-              <thead className="bg-gray-50 dark:bg-gray-600">
+            <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+              <thead className="bg-gray-50 dark:bg-gray-700">
                 <tr>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                     Website
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                    Kategori
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                     Status
@@ -252,70 +178,61 @@ export function GovernmentMonitoring() {
                     Response Time
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                    Terakhir Dicek
+                    Last Checked
                   </th>
                 </tr>
               </thead>
-              <tbody className="bg-white dark:bg-gray-700 divide-y divide-gray-200 dark:divide-gray-600">
-                {filteredWebsites.map((website) => (
-                  <tr key={website.id} className="hover:bg-gray-50 dark:hover:bg-gray-600">
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div>
-                        <div className="text-sm font-medium text-gray-900 dark:text-white">
-                          {website.name}
-                        </div>
-                        <div className="text-sm text-gray-500 dark:text-gray-300">
-                          <Link href={website.url} target="_blank" className="text-blue-600 dark:text-blue-400 hover:underline">
-                            {website.url}
-                          </Link>
-                        </div>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <span className="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200">
-                        {website.category}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getStatusColor(website.status)}`}>
-                        {getStatusText(website.status)}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
-                      {website.responseTime ? `${website.responseTime}ms` : '-'}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
-                      {website.lastChecked.toLocaleTimeString('id-ID')}
+              <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                {isLoading ? (
+                  <tr>
+                    <td colSpan={4} className="px-6 py-4 text-center text-gray-500 dark:text-gray-400">
+                      Loading...
                     </td>
                   </tr>
-                ))}
+                ) : filteredSites.length === 0 ? (
+                  <tr>
+                    <td colSpan={4} className="px-6 py-4 text-center text-gray-500 dark:text-gray-400">
+                      Tidak ada data monitoring
+                    </td>
+                  </tr>
+                ) : (
+                  filteredSites.map((site) => (
+                    <tr key={site.id} className="hover:bg-gray-50 dark:hover:bg-gray-700">
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div>
+                          <div className="text-sm font-medium text-gray-900 dark:text-white">
+                            {site.name}
+                          </div>
+                          <div className="text-sm text-gray-500 dark:text-gray-400">
+                            {site.url}
+                          </div>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getStatusColor(site.status)}`}>
+                          {site.status}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
+                        <span className={getResponseTimeColor(site.responseMs)}>
+                          {site.responseMs}ms
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                        {new Date(site.checkedAt).toLocaleString('id-ID')}
+                      </td>
+                    </tr>
+                  ))
+                )}
               </tbody>
             </table>
           </div>
         </div>
 
-        {/* Last Updated */}
-        <div className="text-center mt-6 text-sm text-gray-500 dark:text-gray-400">
-          Terakhir diperbarui: {new Date().toLocaleString('id-ID')}
-          {isLoading && (
-            <span className="ml-2 inline-flex items-center">
-              <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-red-600" fill="none" viewBox="0 0 24 24">
-                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-              </svg>
-              Memperbarui...
-            </span>
-          )}
-        </div>
-
-        {/* Info Box */}
-        <div className="mt-8 bg-blue-50 dark:bg-blue-900/20 rounded-lg p-6 text-center">
-          <h3 className="text-lg font-semibold text-blue-900 dark:text-blue-100 mb-2">
-            Tentang Monitoring Pemerintah
-          </h3>
-          <p className="text-blue-700 dark:text-blue-200 text-sm">
-            Monitoring ini bertujuan untuk memberikan transparansi ketersediaan layanan digital pemerintah Indonesia. 
-            Data diperbarui setiap 3 menit dan bersifat demonstrasi untuk kepentingan edukasi.
+        {/* Auto-refresh indicator */}
+        <div className="mt-4 text-center">
+          <p className="text-sm text-gray-500 dark:text-gray-400">
+            Data diperbarui setiap 3 menit secara otomatis
           </p>
         </div>
       </div>
