@@ -4,6 +4,9 @@ import { authOptions } from "@/lib/auth";
 import { NextRequest } from "next/server";
 import type { Session } from "next-auth";
 
+// Force dynamic rendering
+export const dynamic = 'force-dynamic';
+
 export async function GET(req: NextRequest) {
   try {
     const session = await getServerSession(authOptions) as Session & { user: { id: string } };
@@ -27,21 +30,28 @@ export async function GET(req: NextRequest) {
       return new Response("Site not found", { status: 404 });
     }
 
-    // Get unique URLs with click events
-    const urls = await prisma.event.findMany({
+    // Get date range (last 30 days)
+    const thirtyDaysAgo = new Date();
+    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+
+    // Get unique URLs with pageview counts
+    const urls = await prisma.event.groupBy({
+      by: ['url'],
       where: { 
         siteId, 
-        type: "click",
+        type: "pageview", 
+        createdAt: { gte: thirtyDaysAgo },
         url: { not: null }
       },
-      select: { url: true },
-      distinct: ['url'],
-      orderBy: { url: 'asc' }
+      _count: { url: true },
+      orderBy: { _count: { url: 'desc' } },
+      take: 50
     });
 
-    const urlList = urls.map(item => item.url).filter(Boolean) as string[];
-
-    return Response.json(urlList);
+    return Response.json(urls.map(url => ({
+      url: url.url,
+      pageviews: url._count.url
+    })));
   } catch (error) {
     console.error('Error fetching URLs:', error);
     return new Response("Internal server error", { status: 500 });

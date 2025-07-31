@@ -4,6 +4,9 @@ import { authOptions } from "@/lib/auth";
 import { NextRequest } from "next/server";
 import type { Session } from "next-auth";
 
+// Force dynamic rendering
+export const dynamic = 'force-dynamic';
+
 export async function GET(req: NextRequest) {
   try {
     const session = await getServerSession(authOptions) as Session & { user: { id: string } };
@@ -13,10 +16,9 @@ export async function GET(req: NextRequest) {
 
     const { searchParams } = new URL(req.url);
     const siteId = searchParams.get("siteId");
-    const url = searchParams.get("url");
 
-    if (!siteId || !url) {
-      return new Response("Site ID and URL are required", { status: 400 });
+    if (!siteId) {
+      return new Response("Site ID is required", { status: 400 });
     }
 
     // Verify user owns this site
@@ -28,19 +30,24 @@ export async function GET(req: NextRequest) {
       return new Response("Site not found", { status: 404 });
     }
 
-    // Get click events for the specific URL
+    // Get date range (last 30 days)
+    const thirtyDaysAgo = new Date();
+    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+
+    // Get click events
     const clicks = await prisma.event.findMany({
       where: { 
         siteId, 
-        type: "click",
-        url: decodeURIComponent(url)
+        type: "click", 
+        createdAt: { gte: thirtyDaysAgo }
       },
-      select: { 
+      select: {
         extra: true,
+        url: true,
         createdAt: true
       },
       orderBy: { createdAt: 'desc' },
-      take: 1000 // Limit to prevent performance issues
+      take: 1000
     });
 
     return Response.json(clicks);

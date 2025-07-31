@@ -3,6 +3,9 @@ import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/auth";
 import type { Session } from "next-auth";
 
+// Force dynamic rendering
+export const dynamic = 'force-dynamic';
+
 type Site = { name: string; domain: string };
 
 export async function GET() {
