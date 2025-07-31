@@ -1,36 +1,171 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Tunggu Monitoring - Website Pemerintah Indonesia
 
-## Getting Started
+Platform monitoring real-time untuk ketersediaan website penting pemerintah Indonesia. Sistem ini dirancang untuk memberikan transparansi dan aksesibilitas informasi ketersediaan layanan digital pemerintah.
 
-First, run the development server:
+## 🚀 Fitur Utama
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+- **Monitoring Real-time**: Pantau status website pemerintah secara real-time dengan update setiap 5 menit
+- **Website Penting Indonesia**: Fokus pada website vital seperti Satu Data, DPR, POLRI, dan lembaga pemerintah lainnya
+- **Dashboard Interaktif**: Interface yang mudah digunakan dengan visualisasi status yang jelas
+- **Filter Kategori**: Filter website berdasarkan kategori (Data & Statistik, Legislatif, Keamanan, dll)
+- **Response Time**: Informasi waktu respons website untuk analisis performa
+- **Akses Gratis**: Layanan monitoring gratis untuk kepentingan publik
+
+## 📋 Website yang Dimonitor
+
+### Data & Statistik
+- Satu Data Indonesia (data.go.id)
+- BPS (bps.go.id)
+
+### Legislatif
+- DPR RI (dpr.go.id)
+
+### Keamanan
+- POLRI (polri.go.id)
+
+### Ekonomi
+- Kementerian Keuangan (kemenkeu.go.id)
+- Bank Indonesia (bi.go.id)
+
+### Kesehatan
+- Kementerian Kesehatan (kemkes.go.id)
+
+### Pendidikan
+- Kementerian Pendidikan (kemdikbud.go.id)
+
+### Pemerintahan
+- Kementerian Dalam Negeri (kemendagri.go.id)
+- Kementerian Luar Negeri (kemlu.go.id)
+
+## 🛠️ Cara Kerja
+
+### Metode Monitoring yang Efisien
+
+Sistem menggunakan pendekatan yang efisien dan tidak terlalu teknis:
+
+1. **HTTP HEAD Request**: Hanya memeriksa header response, tidak mengunduh konten penuh
+2. **Timeout 10 Detik**: Batas waktu untuk menghindari hanging request
+3. **Parallel Processing**: Semua website diperiksa secara bersamaan
+4. **Error Handling**: Graceful handling jika website tidak dapat diakses
+
+### API Endpoint
+
+```
+GET /api/monitoring
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Response:
+```json
+{
+  "success": true,
+  "data": [
+    {
+      "id": "1",
+      "name": "Satu Data Indonesia",
+      "url": "https://data.go.id",
+      "category": "Data & Statistik",
+      "status": "online",
+      "responseTime": 245,
+      "lastChecked": "2024-01-15T10:30:00.000Z"
+    }
+  ],
+  "timestamp": "2024-01-15T10:30:00.000Z"
+}
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 🚀 Cara Menjalankan
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Prerequisites
+- Node.js 18+ 
+- npm atau yarn
 
-## Learn More
+### Installation
 
-To learn more about Next.js, take a look at the following resources:
+1. Clone repository
+```bash
+git clone <repository-url>
+cd tunggu-monitoring
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+2. Install dependencies
+```bash
+npm install
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+3. Jalankan development server
+```bash
+npm run dev
+```
 
-## Deploy on Vercel
+4. Buka browser dan akses `http://localhost:3000`
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### Production Build
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```bash
+npm run build
+npm start
+```
+
+## 📊 Monitoring Interval
+
+- **Development**: Update setiap 5 menit
+- **Production**: Dapat disesuaikan sesuai kebutuhan
+
+## 🔧 Konfigurasi
+
+### Menambah Website Baru
+
+1. Edit file `app/api/monitoring/route.ts`
+2. Tambahkan website baru ke array `websites`
+3. Update komponen `WebsiteStatus.tsx` jika diperlukan
+
+### Mengubah Interval Monitoring
+
+Edit file `components/WebsiteStatus.tsx`:
+```javascript
+// Ubah interval dari 5 menit ke interval yang diinginkan
+const interval = setInterval(checkAllWebsites, 5 * 60 * 1000);
+```
+
+## 🎨 Teknologi yang Digunakan
+
+- **Frontend**: Next.js 14, React, TypeScript
+- **Styling**: Tailwind CSS
+- **Backend**: Next.js API Routes
+- **Deployment**: Vercel (recommended)
+
+## 📈 Keuntungan Pendekatan Ini
+
+1. **Efisien**: Tidak memerlukan database atau server terpisah
+2. **Sederhana**: Implementasi straightforward dengan Next.js
+3. **Scalable**: Mudah ditambahkan website baru
+4. **Real-time**: Update otomatis setiap interval
+5. **Responsive**: Interface yang responsif untuk semua device
+
+## 🔍 Troubleshooting
+
+### Website Tidak Terdeteksi
+- Periksa URL website
+- Pastikan website mendukung HTTP HEAD request
+- Cek firewall atau CORS policy
+
+### Performance Issues
+- Kurangi interval monitoring
+- Implementasi caching jika diperlukan
+- Gunakan CDN untuk static assets
+
+## 🤝 Kontribusi
+
+Kontribusi sangat diterima! Silakan buat pull request atau laporkan issue.
+
+## 📄 License
+
+MIT License - lihat file LICENSE untuk detail.
+
+## 📞 Support
+
+Untuk pertanyaan atau dukungan, silakan buat issue di repository ini.
+
+---
+
+**Tunggu Monitoring** - Transparansi Digital Pemerintah Indonesia 🇮🇩
