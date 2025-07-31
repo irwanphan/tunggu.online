@@ -1,77 +1,40 @@
-# Tunggu Monitoring - Website Pemerintah Indonesia
+# Tunggu Monitoring - Website Analytics & Heatmap Tracking
 
-Platform monitoring real-time untuk ketersediaan website penting pemerintah Indonesia. Sistem ini dirancang untuk memberikan transparansi dan aksesibilitas informasi ketersediaan layanan digital pemerintah.
+Platform analytics dan heatmap tracking yang dirancang untuk memberikan insight mendalam tentang perilaku pengunjung website Anda. Dengan integrasi mudah dan dashboard yang informatif, Tunggu Monitoring membantu Anda memahami user behavior dan meningkatkan conversion rate.
 
 ## 🚀 Fitur Utama
 
-- **Monitoring Real-time**: Pantau status website pemerintah secara real-time dengan update setiap 5 menit
-- **Website Penting Indonesia**: Fokus pada website vital seperti Satu Data, DPR, POLRI, dan lembaga pemerintah lainnya
-- **Dashboard Interaktif**: Interface yang mudah digunakan dengan visualisasi status yang jelas
-- **Filter Kategori**: Filter website berdasarkan kategori (Data & Statistik, Legislatif, Keamanan, dll)
-- **Response Time**: Informasi waktu respons website untuk analisis performa
-- **Akses Gratis**: Layanan monitoring gratis untuk kepentingan publik
-
-## 📋 Website yang Dimonitor
-
-### Data & Statistik
-- Satu Data Indonesia (data.go.id)
-- BPS (bps.go.id)
-
-### Legislatif
-- DPR RI (dpr.go.id)
-
-### Keamanan
-- POLRI (polri.go.id)
-
-### Ekonomi
-- Kementerian Keuangan (kemenkeu.go.id)
-- Bank Indonesia (bi.go.id)
-
-### Kesehatan
-- Kementerian Kesehatan (kemkes.go.id)
-
-### Pendidikan
-- Kementerian Pendidikan (kemdikbud.go.id)
-
-### Pemerintahan
-- Kementerian Dalam Negeri (kemendagri.go.id)
-- Kementerian Luar Negeri (kemlu.go.id)
+- **Real-time Analytics**: Pantau traffic website, pageviews, dan user behavior secara real-time
+- **Interactive Heatmaps**: Visualisasi klik, scroll, dan hover behavior pengunjung
+- **Easy Integration**: Integrasi mudah dengan satu baris kode JavaScript
+- **User Behavior Insights**: Analisis mendalam tentang interaksi pengunjung
+- **Conversion Tracking**: Lacak conversion rate dan optimalkan website
+- **Privacy Compliant**: GDPR compliance dan data anonymization
 
 ## 🛠️ Cara Kerja
 
-### Metode Monitoring yang Efisien
+### Integrasi Mudah
 
-Sistem menggunakan pendekatan yang efisien dan tidak terlalu teknis:
+Hanya perlu menambahkan satu baris kode ke website Anda:
 
-1. **HTTP HEAD Request**: Hanya memeriksa header response, tidak mengunduh konten penuh
-2. **Timeout 10 Detik**: Batas waktu untuk menghindari hanging request
-3. **Parallel Processing**: Semua website diperiksa secara bersamaan
-4. **Error Handling**: Graceful handling jika website tidak dapat diakses
-
-### API Endpoint
-
-```
-GET /api/monitoring
+```html
+<script src="https://your-domain.com/monitor.js" data-site-id="YOUR_SITE_ID"></script>
 ```
 
-Response:
-```json
-{
-  "success": true,
-  "data": [
-    {
-      "id": "1",
-      "name": "Satu Data Indonesia",
-      "url": "https://data.go.id",
-      "category": "Data & Statistik",
-      "status": "online",
-      "responseTime": 245,
-      "lastChecked": "2024-01-15T10:30:00.000Z"
-    }
-  ],
-  "timestamp": "2024-01-15T10:30:00.000Z"
-}
-```
+### Data yang Dilacak
+
+- **Pageviews**: Setiap kunjungan halaman
+- **Clicks**: Lokasi dan elemen yang diklik
+- **Scrolls**: Kedalaman scroll dan behavior
+- **Device Info**: Browser, OS, screen resolution
+- **Referrer**: Sumber traffic
+
+### Dashboard Analytics
+
+- **Real-time Stats**: Pageviews, clicks, scroll events
+- **Top Pages**: Halaman paling populer
+- **Device Distribution**: Desktop, mobile, tablet
+- **Conversion Tracking**: Rate dan trend
 
 ## 🚀 Cara Menjalankan
 
@@ -106,25 +69,40 @@ npm run build
 npm start
 ```
 
-## 📊 Monitoring Interval
+## 📊 Dashboard Features
 
-- **Development**: Update setiap 5 menit
-- **Production**: Dapat disesuaikan sesuai kebutuhan
+### Analytics Dashboard
+- Real-time pageview tracking
+- Click behavior analysis
+- Scroll depth monitoring
+- Device and browser statistics
+- Top performing pages
+
+### Heatmap Visualization
+- Click heatmaps
+- Scroll depth visualization
+- Hover behavior tracking
+- Interactive overlay
+- Color-coded activity levels
 
 ## 🔧 Konfigurasi
 
 ### Menambah Website Baru
 
-1. Edit file `app/api/monitoring/route.ts`
-2. Tambahkan website baru ke array `websites`
-3. Update komponen `WebsiteStatus.tsx` jika diperlukan
+1. Akses dashboard di `/dashboard`
+2. Klik "Add New Site"
+3. Masukkan nama website dan domain
+4. Copy tracking code yang diberikan
+5. Paste ke website Anda
 
-### Mengubah Interval Monitoring
+### Custom Tracking
 
-Edit file `components/WebsiteStatus.tsx`:
 ```javascript
-// Ubah interval dari 5 menit ke interval yang diinginkan
-const interval = setInterval(checkAllWebsites, 5 * 60 * 1000);
+// Custom event tracking
+trackEvent('custom_action', {
+  category: 'engagement',
+  value: 1
+});
 ```
 
 ## 🎨 Teknologi yang Digunakan
@@ -132,27 +110,50 @@ const interval = setInterval(checkAllWebsites, 5 * 60 * 1000);
 - **Frontend**: Next.js 14, React, TypeScript
 - **Styling**: Tailwind CSS
 - **Backend**: Next.js API Routes
+- **Database**: Prisma + SQLite/PostgreSQL
 - **Deployment**: Vercel (recommended)
 
-## 📈 Keuntungan Pendekatan Ini
+## 📈 Keuntungan Platform
 
-1. **Efisien**: Tidak memerlukan database atau server terpisah
-2. **Sederhana**: Implementasi straightforward dengan Next.js
-3. **Scalable**: Mudah ditambahkan website baru
-4. **Real-time**: Update otomatis setiap interval
-5. **Responsive**: Interface yang responsif untuk semua device
+1. **Mudah Digunakan**: Setup dalam hitungan menit
+2. **Real-time Data**: Update data secara real-time
+3. **Privacy First**: GDPR compliant dan data anonymization
+4. **Scalable**: Mendukung ribuan website
+5. **Cost Effective**: Gratis untuk penggunaan dasar
+
+## 🔍 Use Cases
+
+### E-commerce
+- Track product page interactions
+- Analyze checkout funnel
+- Monitor conversion rates
+- Optimize user experience
+
+### Content Websites
+- Understand reading patterns
+- Track engagement metrics
+- Optimize content placement
+- Monitor user journey
+
+### SaaS Applications
+- Track feature usage
+- Analyze user onboarding
+- Monitor user engagement
+- Optimize conversion funnels
 
 ## 🔍 Troubleshooting
 
-### Website Tidak Terdeteksi
-- Periksa URL website
-- Pastikan website mendukung HTTP HEAD request
-- Cek firewall atau CORS policy
+### Tracking Code Tidak Berfungsi
+- Periksa console browser untuk error
+- Pastikan domain sudah terdaftar
+- Cek network connectivity
+- Verifikasi site ID
 
-### Performance Issues
-- Kurangi interval monitoring
-- Implementasi caching jika diperlukan
-- Gunakan CDN untuk static assets
+### Data Tidak Muncul
+- Tunggu beberapa menit untuk data pertama
+- Periksa filter tanggal di dashboard
+- Pastikan tracking code sudah benar
+- Cek browser compatibility
 
 ## 🤝 Kontribusi
 
@@ -168,4 +169,4 @@ Untuk pertanyaan atau dukungan, silakan buat issue di repository ini.
 
 ---
 
-**Tunggu Monitoring** - Transparansi Digital Pemerintah Indonesia 🇮🇩
+**Tunggu Monitoring** - Website Analytics & Heatmap Tracking Platform 🚀

@@ -1,35 +1,8 @@
 export function Features() {
   const features = [
     {
-      title: "Monitoring Real-time",
-      description: "Pantau status website pemerintah secara real-time dengan update setiap menit",
-      icon: (
-        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-        </svg>
-      )
-    },
-    {
-      title: "Website Penting Indonesia",
-      description: "Fokus pada website vital seperti Satu Data, DPR, POLRI, dan lembaga pemerintah lainnya",
-      icon: (
-        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9v-9m0-9v9" />
-        </svg>
-      )
-    },
-    {
-      title: "Notifikasi Otomatis",
-      description: "Dapatkan notifikasi segera ketika website mengalami gangguan atau downtime",
-      icon: (
-        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-5 5v-5zM4.19 4.19A4 4 0 004 6v12a4 4 0 004 4h12a4 4 0 004-4V6a4 4 0 00-4-4H8a4 4 0 00-2.81 1.19z" />
-        </svg>
-      )
-    },
-    {
-      title: "Dashboard Interaktif",
-      description: "Interface yang mudah digunakan dengan visualisasi status yang jelas dan informatif",
+      title: "Real-time Analytics",
+      description: "Pantau traffic website, pageviews, dan user behavior secara real-time dengan dashboard yang informatif",
       icon: (
         <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
@@ -37,35 +10,62 @@ export function Features() {
       )
     },
     {
-      title: "Riwayat Monitoring",
-      description: "Akses data historis untuk analisis tren dan performa website dari waktu ke waktu",
+      title: "Interactive Heatmaps",
+      description: "Visualisasi klik, scroll, dan hover behavior pengunjung dengan heatmap yang interaktif dan detail",
       icon: (
         <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
         </svg>
       )
     },
     {
-      title: "Akses Gratis",
-      description: "Layanan monitoring gratis untuk kepentingan publik dan transparansi pemerintah",
+      title: "Easy Integration",
+      description: "Integrasi mudah dengan satu baris kode JavaScript. Tidak memerlukan setup yang rumit",
       icon: (
         <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+        </svg>
+      )
+    },
+    {
+      title: "User Behavior Insights",
+      description: "Analisis mendalam tentang bagaimana pengunjung berinteraksi dengan website Anda",
+      icon: (
+        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+        </svg>
+      )
+    },
+    {
+      title: "Conversion Tracking",
+      description: "Lacak conversion rate dan optimalkan website untuk meningkatkan penjualan",
+      icon: (
+        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+        </svg>
+      )
+    },
+    {
+      title: "Privacy Compliant",
+      description: "Respek terhadap privasi pengguna dengan GDPR compliance dan data anonymization",
+      icon: (
+        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
         </svg>
       )
     }
   ];
 
   return (
-    <section id="about" className="py-20 px-4 sm:px-6 lg:px-8 bg-white dark:bg-gray-900">
+    <section id="features" className="py-20 px-4 sm:px-6 lg:px-8 bg-white dark:bg-gray-900">
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-16">
           <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white mb-4">
             Fitur Unggulan
           </h2>
           <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
-            Platform monitoring website pemerintah Indonesia yang dirancang untuk memberikan 
-            transparansi dan aksesibilitas informasi ketersediaan layanan digital.
+            Platform analytics dan heatmap tracking yang dirancang untuk memberikan insight mendalam 
+            tentang perilaku pengunjung website Anda.
           </p>
         </div>
 
